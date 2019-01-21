@@ -73,9 +73,9 @@ class Graph :
     def add_edges_from_list(self, list_edges):
         for edge in list_edges :      
             if ((self._type == "directed_weighted") or (self._type == "undirected_weighted")) :
-                add_edge(edge[0],edge[1],edge[2])
+                self.add_edge(edge[0],edge[1],edge[2])
             else :               
-                 add_edge(edge[0],edge[1])
+                self.add_edge(edge[0],edge[1])
 
                 
         
@@ -100,13 +100,13 @@ class Graph :
 # My Methods :                
                 
 def display_graph(graph):
-    
+        
     if ((graph._type == "directed_weighted") or (graph._type == "directed")):
         G = nx.DiGraph(graph._graphdic)
     else :
         G = nx.Graph(graph._graphdic)
         
-    pos=nx.spring_layout(G,k=1.50)
+    pos=nx.spring_layout(G,k=2,seed = 69)
     plt.figure()
     nx.draw(G,pos)
         
@@ -117,5 +117,18 @@ def display_graph(graph):
         nx.draw_networkx_edge_labels(G,pos,edge_labels=edge_labels)
     else :   
         nx.draw_networkx_labels(G,pos)       
-    # show graphs
     plt.show()    
+
+    
+def display_nxgraph(G):
+    plt.figure(figsize=(20,20))
+    pos = nx.spring_layout(G)  # positions for all nodes
+
+    nx.draw_networkx_nodes(G, pos, node_size=700)
+# edges
+    nx.draw_networkx_edges(G, pos)
+# labels
+    nx.draw_networkx_labels(G, pos, font_size=20, font_family='sans-serif')
+
+    plt.axis('off')
+    plt.show()
