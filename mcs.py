@@ -39,13 +39,13 @@ def find_K(laplacian, min_energy = 0.9):
     parcours_total = 0.0
     total = sum(laplacian)
     
-    if total == 0.0:
+    if (total == 0.0):
         
         return len(laplacian)
     
     for i in range(len(laplacian)):
         parcours_total += laplacian[i]
-        if parcours_total/total >= min_energy:
+        if (parcours_total/total >= min_energy):
             return i+1
         
     return len(laplacian)
@@ -89,6 +89,42 @@ def extract_all_induced_subgraphs(graph,combinaisons):
     return subgraphs
 
 
+def filter_list_of_lists(liste, size):
+    """
+        filtre une liste en ne conservant que les listes contenus d'une taille donnée en entrée.
+    """   
+    newliste = []
+    for ls in liste:
+        if (len(ls) == size):
+            newliste.append(ls)
+    return newliste
+
+
+def filter_a_list_with_a_list(liste,filtre):
+    """
+        filtre une liste avec une autre
+    """  
+    return [r for r in liste if all(z in r for z in filtre)]
+
+
+def max_clique_filter(graph, graph2, combinaisons1, combinaisons2):
+    """
+        filtre les listes de combinaisons avec la max_clique des graphs.
+    """      
+    Clique = list(nx.find_cliques(graph))
+    Clique2 = list(nx.find_cliques(graph2))
+    # On prend la max clique de taille commune la plus grande :
+    size = min(len(longest_list_in_a_list(Clique)),len(longest_list_in_a_list(Clique2)))
+    newclique = filter_list_of_lists(Clique,size)
+    newclique2 = filter_list_of_lists(Clique2,size)
+    filtre1 = newclique[0]
+    filtre2 = newclique2[0]
+    
+    newcombinaisons1 = filter_a_list_with_a_list(combinaisons1,filtre1)
+    newcombinaisons2 = filter_a_list_with_a_list(combinaisons2,filtre2)
+    return [newcombinaisons1,newcombinaisons2]
+        
+    
 def my_mcs(G1,G2, min_nombre_vertex = 3, use_max_clique = False):
     """
         implémente Maximum Common Induced Subgraph
@@ -107,7 +143,16 @@ def my_mcs(G1,G2, min_nombre_vertex = 3, use_max_clique = False):
     print("Nombre de combinaisons Graph 2 :")    
     print(len(combinaisons2))
     print("Terminé!")
-    
+
+    if (use_max_clique == True):
+        combinaisons1 = max_clique_filter(G1, G2, combinaisons1, combinaisons2)[0]
+        combinaisons2 = max_clique_filter(G1, G2, combinaisons1, combinaisons2)[1]   
+        print("Nombre de combinaisons Graph 1 après max_clique :")    
+        print(len(combinaisons1))        
+        print("Nombre de combinaisons Graph 2 après max_clique :")    
+        print(len(combinaisons2))        
+ 
+
     # Construction et Stockage des Sous-Graphes Induits. Check de la connexité.
     print("Extraction des Induced Subgraphs...")    
     subgraphs1 = []
