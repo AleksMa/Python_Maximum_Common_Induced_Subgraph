@@ -12,10 +12,17 @@ warnings.filterwarnings("ignore",category=matplotlib.cbook.mplDeprecation)
 
    
 def combinations(liste,k):
+    """
+        retourne toutes les combinaisons de k éléments dans une liste.
+    """
     return list(it.combinations(liste, k))
 
 
-def combinations_recursive(graph,min_nombre_vertex):
+def combinations_recursive(graph,min_nombre_vertex=3):
+    """
+        retourne toutes les combinaisons de induced subgraphs de k vertices croissants dans un graph.
+        min_nombre_vertex est un paramètre manuel/seuil pour exclure des combinaisons de trop petites tailles.
+    """
     nodes = graph.nodes
     length = len(nodes)
     combinaisons = []
@@ -25,7 +32,10 @@ def combinations_recursive(graph,min_nombre_vertex):
     
 
 def find_K(laplacian, min_energy = 0.9):
-   
+    """
+        impliquée dans le calcul de similarités. Permet de trouver le K idéal, nombre de valeurs propres contenant
+        à minimam un seuil d'informations min_energy.
+    """   
     parcours_total = 0.0
     total = sum(laplacian)
     
@@ -42,7 +52,9 @@ def find_K(laplacian, min_energy = 0.9):
 
 
 def eigenvector_similarity(graph1, graph2):
-    
+    """
+        implémente la mesure de similarités de deux graphs suivant la méthode avec Laplaciennes+valeurs propres.
+    """     
     # Calcul des valeurs propres des laplaciens des graphs : 
     laplacien_1 = nx.spectrum.laplacian_spectrum(graph1)
     laplacien_2 = nx.spectrum.laplacian_spectrum(graph2)
@@ -58,6 +70,9 @@ def eigenvector_similarity(graph1, graph2):
 
 
 def extract_induced_subgraph(graph, list_nodes_tokeep):
+    """
+        retourne le induced subgraph d'un graph suivant une liste de vertices à garder list_nodes_tokeep
+    """   
     subgraph = graph.copy()
     listnodes = [x for x in subgraph.nodes if x not in list_nodes_tokeep]
     subgraph.remove_nodes_from(listnodes)
@@ -65,12 +80,21 @@ def extract_induced_subgraph(graph, list_nodes_tokeep):
 
 
 def extract_all_induced_subgraphs(graph,combinaisons):
+    """
+        retourne tous les induced subgraphs d'un graph suivant la liste de combinaisons en entrée.
+    """   
     subgraphs = []
     for combinaison in combinaisons:
         subgraphs.append(extract_induced_subgraph(graph,combinaison))
     return subgraphs
 
-def mcs(G1,G2, min_nombre_vertex = 1):
+
+def my_mcs(G1,G2, min_nombre_vertex = 3, use_max_clique = False):
+    """
+        implémente Maximum Common Induced Subgraph
+        param min_nombre_vertex : correspond au paramètre de combinations_recursive.
+        param use_max_clique : mettre à True pour se baser sur la max_clique.
+    """
     
     # Combinaisons
     print("Combinaisons en construction...")
@@ -84,7 +108,7 @@ def mcs(G1,G2, min_nombre_vertex = 1):
     print(len(combinaisons2))
     print("Terminé!")
     
-    # Construction et Stockage des Sous-Graphes Induits
+    # Construction et Stockage des Sous-Graphes Induits. Check de la connexité.
     print("Extraction des Induced Subgraphs...")    
     subgraphs1 = []
     for combinaison in combinaisons1:
