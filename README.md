@@ -12,3 +12,8 @@ Clone this repository and make sure that you have all the required dependencies 
 
 # How to use it ? 
 
+
+# References
+
+https://en.wikipedia.org/wiki/Maximum_common_induced_subgraph
+https://www.cs.cmu.edu/~jingx/docs/DBreport.pdf
