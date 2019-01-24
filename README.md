@@ -47,6 +47,7 @@ To optimize the number of combinations tested, I made two choices:
 **Improvements to do later :**
 
 * Use the compatibility graph. See the reference.
+* (For very pythonic users : Refactoring to avoid code duplication and apply the PEP8) ;-) 
 
 # References
 
