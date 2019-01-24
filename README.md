@@ -1,4 +1,4 @@
-# Maximum Common Induced Subgraph
+# Maximum Common Induced Subgraph for Python 3
 ### Mathieu Vandecasteele - French Data Science Engineer
 ### http://mathieuvdc.com
 
@@ -19,6 +19,30 @@ Clone this repository and make sure that you have all the required dependencies 
 * see demo.ipynb to for an example.
 
 # How does it work ?
+
+This is a sort of Brute Force way with some optimizations and intelligent shortcuts to reduce time. This is a NP-Hard problem.
+
+**The difficulties will lie in:**
+
+* the optimization of the number of vertices combinations to be removed, because testing all combinations will involve a lot of resources since adding an additional basic vertex in a graph multiplies by 2 the number of possible combinations.
+* The measurement of the simmilarity between two induced subgraphs that can take time.
+
+**The basic solution :**
+* List all possible subgraphs of a Graph with vertex delimitations.
+* Do the same with a second Graph.
+* Compare the two lists of subgraphs with a similarity calculation, all identical graphs 2 to 2 are returned.
+* We return solutions with as many vertices as possible.
+
+**Optimizations done :**
+
+If we do this, only 10 vertices graphs will take a long time although it will work. What I have done to improve my process and save time:
+
+To optimize the number of combinations tested, I made two choices:
+
+* Use a manual parameter of the minimum number of vertices that you want to find, which may ultimately lead to no result but in general if you apply a number of vertices half the total number of vertices you will find a solution. This allows to remove all small solutions such as graphs of 1 and 2 vertex-ices at least. By default, the basic parameter is 3.
+* Use the maximum clique of both graphs. Indeed, its size can be used as a value for the previous manual parameter and it can be used as a basis to build combinations by taking only combinations that have at least the nodes of this click. It can also help the final decision-making process by further reducing the overall scope of possibilities. Sometimes, more than one max clique is returned so i decided to iterate on each of them to find the best solution. Use Max Clique sometimes don't permit to find the best solution compared to the solution without but it can save a lot of time !
+* Exclude unconnected graphs if its wanted.
+* To save time in calculating similarities, I switched from the nx.graph_edit_distance() function implemented as a base in NetworkX to a function myself implemented based on the Laplacian matrices of the graphs. See the reference.
 
 
 # References
