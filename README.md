@@ -55,4 +55,4 @@ To optimize the number of combinations tested, I made two choices:
 
 * Distance/Similarities bewteen two graphs : https://www.cs.cmu.edu/~jingx/docs/DBreport.pdf
 
-* "Searching for a maximum common induced subgraph by decomposing the compatibility graph" by M. Minot and S. N. Ndiaye.
+* "Searching for a maximum common induced subgraph by decomposing the compatibility graph" by M. Minot and S. N. Ndiaye. http://www.lsis.org/tuples/workshop/wscp_bgbtp_1.pdf
