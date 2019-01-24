@@ -44,9 +44,14 @@ To optimize the number of combinations tested, I made two choices:
 * Exclude unconnected graphs if its wanted.
 * To save time in calculating similarities, I switched from the nx.graph_edit_distance() function implemented as a base in NetworkX to a function myself implemented based on the Laplacian matrices of the graphs. See the reference.
 
+**Improvements to do later :**
+
+* Use the compatibility graph. See the reference.
 
 # References
 
 * https://en.wikipedia.org/wiki/Maximum_common_induced_subgraph
 
 * Distance/Similarities bewteen two graphs : https://www.cs.cmu.edu/~jingx/docs/DBreport.pdf
+
+* "Searching for a maximum common induced subgraph by decomposing the compatibility graph" by M. Minot and S. N. Ndiaye.
