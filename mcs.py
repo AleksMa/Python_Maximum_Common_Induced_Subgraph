@@ -1,13 +1,15 @@
 # Mathieu VANDECASTEELE 2018
+# v 1.0
+# Do not take in consideration code duplication. I'll clean this later.
 import numpy as np
 import matplotlib.pyplot as plt
-import pandas as pd
 import networkx as nx
 import warnings
 import itertools as it
 import matplotlib.cbook
 from utils import *
 from graph import *
+import time
 warnings.filterwarnings("ignore",category=matplotlib.cbook.mplDeprecation)
 
    
@@ -34,7 +36,7 @@ def combinations_recursive(graph,min_nombre_vertex=3):
 def find_K(laplacian, min_energy = 0.9):
     """
         impliquée dans le calcul de similarités. Permet de trouver le K idéal, nombre de valeurs propres contenant
-        à minimam un seuil d'informations min_energy.
+        à minima un seuil d'informations min_energy.
     """   
     parcours_total = 0.0
     total = sum(laplacian)
@@ -107,6 +109,7 @@ def filter_a_list_with_a_list(liste,filtre):
     return [r for r in liste if all(z in r for z in filtre)]
 
 
+
 def max_clique_filter(graph, graph2, combinaisons1, combinaisons2):
     """
         filtre les listes de combinaisons avec la max_clique des graphs.
@@ -115,66 +118,172 @@ def max_clique_filter(graph, graph2, combinaisons1, combinaisons2):
     Clique2 = list(nx.find_cliques(graph2))
     # On prend la max clique de taille commune la plus grande :
     size = min(len(longest_list_in_a_list(Clique)),len(longest_list_in_a_list(Clique2)))
-    newclique = filter_list_of_lists(Clique,size)
-    newclique2 = filter_list_of_lists(Clique2,size)
-    filtre1 = newclique[0]
-    filtre2 = newclique2[0]
     
-    newcombinaisons1 = filter_a_list_with_a_list(combinaisons1,filtre1)
-    newcombinaisons2 = filter_a_list_with_a_list(combinaisons2,filtre2)
-    return [newcombinaisons1,newcombinaisons2]
+    filters1 = filter_list_of_lists(Clique,size)
+    filters2 = filter_list_of_lists(Clique2,size)
+    newcombinaisons1 = []
+    newcombinaisons2 = []
+
+    for filtre in filters1:      
+        newcombinaisons1.append(filter_a_list_with_a_list(combinaisons1,filtre))
+    for filtre in filters2:      
+        newcombinaisons2.append(filter_a_list_with_a_list(combinaisons2,filtre))        
+    
+    return [newcombinaisons1 , newcombinaisons2]
         
+
     
-def my_mcs(G1,G2, min_nombre_vertex = 3, use_max_clique = False):
+def maximum_common_induced_subgraph(G1,G2, min_number_vertex = 3, use_max_clique = False, remove_disconnected = True):
     """
         implémente Maximum Common Induced Subgraph
         param min_nombre_vertex : correspond au paramètre de combinations_recursive.
         param use_max_clique : mettre à True pour se baser sur la max_clique.
     """
-    
-    # Combinaisons
-    print("Combinaisons en construction...")
+
+    start = time.time()
+   
+    # Combinations
+    print("Combinations in construction...")
     nodesG1 = len(G1.nodes)
     nodesG2 = len(G2.nodes)
-    combinaisons1 = combinations_recursive(G1,min_nombre_vertex)
-    print("Nombre de combinaisons Graph 1 :")    
+    combinaisons1 = combinations_recursive(G1,min_number_vertex)
+    print("Combinations number Graph 1 :")    
     print(len(combinaisons1))
-    combinaisons2 = combinations_recursive(G2,min_nombre_vertex)
-    print("Nombre de combinaisons Graph 2 :")    
+    combinaisons2 = combinations_recursive(G2,min_number_vertex)
+    print("Combinations number Graph 2 :")    
     print(len(combinaisons2))
-    print("Terminé!")
+    print("Done!")
 
     if (use_max_clique == True):
-        combinaisons1 = max_clique_filter(G1, G2, combinaisons1, combinaisons2)[0]
-        combinaisons2 = max_clique_filter(G1, G2, combinaisons1, combinaisons2)[1]   
-        print("Nombre de combinaisons Graph 1 après max_clique :")    
-        print(len(combinaisons1))        
-        print("Nombre de combinaisons Graph 2 après max_clique :")    
-        print(len(combinaisons2))        
- 
-
-    # Construction et Stockage des Sous-Graphes Induits. Check de la connexité.
-    print("Extraction des Induced Subgraphs...")    
-    subgraphs1 = []
-    for combinaison in combinaisons1:
-        graph_extracted = extract_induced_subgraph(G1,combinaison) 
-        if nx.is_connected(graph_extracted):
-            subgraphs1.append(graph_extracted)      
-    subgraphs2 = []
-    for combinaison in combinaisons2:
-        graph_extracted = extract_induced_subgraph(G2,combinaison) 
-        if nx.is_connected(graph_extracted):
-            subgraphs2.append(graph_extracted)   
-    print("Terminé!")    
+        print("Max Clique Filter Enabled...")
+        combinaisons = max_clique_filter(G1, G2, combinaisons1, combinaisons2)
+        
+        # Construction and Storage of Induced Subgraphs.
+        print("Extracting All Induced Subgraphs for each max_clique...")
+        
+        if (remove_disconnected == True):
+            
+            subgraphs_sets_1 = []
+            for combi in combinaisons[0]:
+                subgraphs1 = []
+                for comb in combi :       
+                    graph_extracted = extract_induced_subgraph(G1,comb) 
+                    if nx.is_connected(graph_extracted):                    
+                        subgraphs1.append(graph_extracted)
+                subgraphs_sets_1.append(subgraphs1)
+                             
+                    
+            subgraphs_sets_2 = []
+            for combi in combinaisons[1]:
+                subgraphs2 = []
+                for comb in combi :       
+                    graph_extracted = extract_induced_subgraph(G2,comb) 
+                    if nx.is_connected(graph_extracted):                    
+                        subgraphs2.append(graph_extracted)
+                subgraphs_sets_2.append(subgraphs2)                      
+                    
+        else :
+            
+            subgraphs_sets_1 = []
+            for combi in combinaisons[0]:
+                subgraphs1 = []
+                for comb in combi :       
+                    graph_extracted = extract_induced_subgraph(G1,comb) 
+                    subgraphs1.append(graph_extracted)
+                subgraphs_sets_1.append(subgraphs1)
+                                                
+            subgraphs_sets_2 = []
+            for combi in combinaisons[1]:
+                subgraphs2 = []
+                for comb in combi :       
+                    graph_extracted = extract_induced_subgraph(G2,comb) 
+                    subgraphs2.append(graph_extracted)
+                subgraphs_sets_2.append(subgraphs2)  
+                               
+        print("Done!")    
     
-    # Distances et stockage des sous graphs communs
-    communs = []
-    print("Distances...")
-    for sub1 in subgraphs1:
-        for sub2 in subgraphs2:
-            if (len(sub1.nodes) == len(sub2.nodes)):
-                distance = eigenvector_similarity(sub1,sub2)
-                if (distance == 0.0):
-                    communs.append((sub1,sub2,len(sub1.nodes)))                               
-    print("Terminé!")
-    return communs
+        # Flat the subgraph sets :
+        subgraphs_1 = [item for sublist in subgraphs_sets_1 for item in sublist]
+        subgraphs_2 = [item for sublist in subgraphs_sets_2 for item in sublist]
+        print("Final Subgraphs Number after filtering with Max Cliques :")
+        print("for graph 1 :"+str(len(subgraphs_1)))
+        print("for graph 2 :"+str(len(subgraphs_2)))
+        
+        # Distances and storage of common subgraphs with the highest number of nodes.
+        commons = []       
+        print("Distances...")        
+        for sub1 in subgraphs_1:
+            for sub2 in subgraphs_2:
+                if (len(sub1.nodes) == len(sub2.nodes)):
+                    distance = eigenvector_similarity(sub1,sub2)
+                    if (distance == 0.0):
+                        commons.append((sub1,sub2,len(sub1.nodes)))                
+        highest = 0
+        for tup in commons :
+            if (tup[2] > highest):
+                highest = tup[2]        
+        newcommons = []
+        for tup in commons :
+            if (tup[2] == highest):
+                newcommons.append(tup)                    
+        print("Done!")
+        print("Found "+str(len(newcommons))+" maximum common induced subgraphs.")
+        print("Maximum Number of nodes : "+str(highest))
+        end = time.time()
+        print("Time elapsed :"+str(end - start)) 
+        return newcommons 
+ 
+    else :
+        # Construction and Storage of Induced Subgraphs.
+        print("Extracting All Induced Subgraphs...")    
+        if (remove_disconnected == True):       
+            subgraphs1 = []
+            for combinaison in combinaisons1:
+                graph_extracted = extract_induced_subgraph(G1,combinaison) 
+                if nx.is_connected(graph_extracted):
+                    subgraphs1.append(graph_extracted)      
+            subgraphs2 = []
+            for combinaison in combinaisons2:
+                graph_extracted = extract_induced_subgraph(G2,combinaison) 
+                if nx.is_connected(graph_extracted):
+                    subgraphs2.append(graph_extracted)   
+        else :
+            subgraphs1 = []
+            for combinaison in combinaisons1:
+                graph_extracted = extract_induced_subgraph(G1,combinaison) 
+                subgraphs1.append(graph_extracted)      
+            subgraphs2 = []
+            for combinaison in combinaisons2:
+                graph_extracted = extract_induced_subgraph(G2,combinaison) 
+                subgraphs2.append(graph_extracted)                         
+        print("Done!")    
+        print("Final Subgraphs Number after filtering :")
+        print("for graph 1 :"+str(len(subgraphs1)))
+        print("for graph 2 :"+str(len(subgraphs2)))    
+    
+        # Distances and storage of common subgraphs with the highest number of nodes.
+        commons = []
+        print("Distances...")
+        for sub1 in subgraphs1:
+            for sub2 in subgraphs2:
+                if (len(sub1.nodes) == len(sub2.nodes)):
+                    distance = eigenvector_similarity(sub1,sub2)
+                    if (distance == 0.0):
+                        commons.append((sub1,sub2,len(sub1.nodes)))
+                        
+        highest = 0
+        for tup in commons :
+            if (tup[2] > highest):
+                highest = tup[2]
+        
+        newcommons = []
+        for tup in commons :
+            if (tup[2] == highest):
+                newcommons.append(tup)
+                     
+        print("Done!")
+        print("Found "+str(len(newcommons))+" maximum common induced subgraphs.")
+        print("Maximum Number of nodes : "+str(highest))
+        end = time.time()
+        print("Time elapsed :"+str(end - start)) 
+        return newcommons
