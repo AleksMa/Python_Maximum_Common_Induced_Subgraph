@@ -16,7 +16,7 @@ Clone this repository and make sure that you have all the required dependencies 
 * list_mcis = maximum_common_induced_subgraph(Graph1,Graph2,4,False,True). Thats means i want 4 minimum vertices, i disable the filter with max clique and i want to remove the disconnected graphs.
 * list_mcis will be a list with one tuple for each subgraphs found.
 * To visualise : display_graph(list_mcis[tuple_number][0 or 1]). This function is implemented in graph.py.
-* see demo.ipynb to for an example.
+* see demo.ipynb for an example.
 
 # How does it work ?
 
