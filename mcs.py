@@ -151,7 +151,7 @@ def maximum_common_induced_subgraph(G1,G2, min_number_vertex = 3, use_max_clique
     #print(len(combinaisons1))
     combinaisons2 = combinations_recursive(G2,min_number_vertex)
     #print("Combinations number Graph 2 :")    
-    print(len(combinaisons2))
+    #print(len(combinaisons2))
     #print("Done!")
 
     if (use_max_clique == True):

@@ -50,7 +50,7 @@ G = CreateGraph(sys.argv[1])
 G2 = CreateGraph(sys.argv[2])
 
 mature = float(sys.argv[3]) * (G.number_of_nodes() + G2.number_of_nodes()) / 2
-print(mature)
+# print(mature)
 
 communs = maximum_common_induced_subgraph(G,G2,int(mature),False,True)
 if (len(communs) == 0):
