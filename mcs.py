@@ -143,23 +143,23 @@ def maximum_common_induced_subgraph(G1,G2, min_number_vertex = 3, use_max_clique
     start = time.time()
    
     # Combinations
-    print("Combinations in construction...")
+    #print("Combinations in construction...")
     nodesG1 = len(G1.nodes)
     nodesG2 = len(G2.nodes)
     combinaisons1 = combinations_recursive(G1,min_number_vertex)
-    print("Combinations number Graph 1 :")    
-    print(len(combinaisons1))
+    #print("Combinations number Graph 1 :")    
+    #print(len(combinaisons1))
     combinaisons2 = combinations_recursive(G2,min_number_vertex)
-    print("Combinations number Graph 2 :")    
+    #print("Combinations number Graph 2 :")    
     print(len(combinaisons2))
-    print("Done!")
+    #print("Done!")
 
     if (use_max_clique == True):
-        print("Max Clique Filter Enabled...")
+        #print("Max Clique Filter Enabled...")
         combinaisons = max_clique_filter(G1, G2, combinaisons1, combinaisons2)
         
         # Construction and Storage of Induced Subgraphs.
-        print("Extracting All Induced Subgraphs for each max_clique...")
+        #print("Extracting All Induced Subgraphs for each max_clique...")
         
         if (remove_disconnected == True):
             
@@ -200,18 +200,18 @@ def maximum_common_induced_subgraph(G1,G2, min_number_vertex = 3, use_max_clique
                     subgraphs2.append(graph_extracted)
                 subgraphs_sets_2.append(subgraphs2)  
                                
-        print("Done!")    
+        #print("Done!")    
     
         # Flat the subgraph sets :
         subgraphs_1 = [item for sublist in subgraphs_sets_1 for item in sublist]
         subgraphs_2 = [item for sublist in subgraphs_sets_2 for item in sublist]
-        print("Final Subgraphs Number after filtering with Max Cliques :")
-        print("for graph 1 :"+str(len(subgraphs_1)))
-        print("for graph 2 :"+str(len(subgraphs_2)))
+        #print("Final Subgraphs Number after filtering with Max Cliques :")
+        #print("for graph 1 :"+str(len(subgraphs_1)))
+        #print("for graph 2 :"+str(len(subgraphs_2)))
         
         # Distances and storage of common subgraphs with the highest number of nodes.
         commons = []       
-        print("Distances...")        
+        #print("Distances...")        
         for sub1 in subgraphs_1:
             for sub2 in subgraphs_2:
                 if (len(sub1.nodes) == len(sub2.nodes)):
@@ -226,16 +226,16 @@ def maximum_common_induced_subgraph(G1,G2, min_number_vertex = 3, use_max_clique
         for tup in commons :
             if (tup[2] == highest):
                 newcommons.append(tup)                    
-        print("Done!")
-        print("Found "+str(len(newcommons))+" maximum common induced subgraphs.")
-        print("Maximum Number of nodes : "+str(highest))
+        #print("Done!")
+        #print("Found "+str(len(newcommons))+" maximum common induced subgraphs.")
+        #print("Maximum Number of nodes : "+str(highest))
         end = time.time()
-        print("Time elapsed :"+str(end - start)) 
+        #print("Time elapsed :"+str(end - start)) 
         return newcommons 
  
     else :
         # Construction and Storage of Induced Subgraphs.
-        print("Extracting All Induced Subgraphs...")    
+        #print("Extracting All Induced Subgraphs...")    
         if (remove_disconnected == True):       
             subgraphs1 = []
             for combinaison in combinaisons1:
@@ -256,14 +256,14 @@ def maximum_common_induced_subgraph(G1,G2, min_number_vertex = 3, use_max_clique
             for combinaison in combinaisons2:
                 graph_extracted = extract_induced_subgraph(G2,combinaison) 
                 subgraphs2.append(graph_extracted)                         
-        print("Done!")    
-        print("Final Subgraphs Number after filtering :")
-        print("for graph 1 :"+str(len(subgraphs1)))
-        print("for graph 2 :"+str(len(subgraphs2)))    
+        #print("Done!")    
+        #print("Final Subgraphs Number after filtering :")
+        #print("for graph 1 :"+str(len(subgraphs1)))
+        #print("for graph 2 :"+str(len(subgraphs2)))    
     
         # Distances and storage of common subgraphs with the highest number of nodes.
         commons = []
-        print("Distances...")
+        #print("Distances...")
         for sub1 in subgraphs1:
             for sub2 in subgraphs2:
                 if (len(sub1.nodes) == len(sub2.nodes)):
@@ -281,9 +281,9 @@ def maximum_common_induced_subgraph(G1,G2, min_number_vertex = 3, use_max_clique
             if (tup[2] == highest):
                 newcommons.append(tup)
                      
-        print("Done!")
-        print("Found "+str(len(newcommons))+" maximum common induced subgraphs.")
-        print("Maximum Number of nodes : "+str(highest))
+        #print("Done!")
+        #print("Found "+str(len(newcommons))+" maximum common induced subgraphs.")
+        #print("Maximum Number of nodes : "+str(highest))
         end = time.time()
-        print("Time elapsed :"+str(end - start)) 
+        #print("Time elapsed :"+str(end - start)) 
         return newcommons
