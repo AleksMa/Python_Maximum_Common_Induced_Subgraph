@@ -40,19 +40,20 @@ def CreateGraph(filename):
         exit()
     return G
 
-if len(sys.argv) < 4:
+if len(sys.argv) < 5:
     print("sys.argv[1]: Graph file1")
     print("sys.argv[2]: Graph file2")
     print("sys.argv[3]: Mature rate")
+    print("sys.argv[4]: Limit in seconds")
     exit()
 
 G = CreateGraph(sys.argv[1])
 G2 = CreateGraph(sys.argv[2])
 
 mature = float(sys.argv[3]) * (G.number_of_nodes() + G2.number_of_nodes()) / 2
-# print(mature)
+seconds = float(sys.argv[4])
 
-communs = maximum_common_induced_subgraph(G,G2,int(mature),False,True)
+communs = maximum_common_induced_subgraph(G,G2,int(mature),False,True,seconds)
 if (len(communs) == 0):
     print(0)
     exit()
