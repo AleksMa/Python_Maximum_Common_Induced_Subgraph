@@ -27,7 +27,7 @@ def combinations_recursive(graph, min_nombre_vertex=3):
     length = len(nodes)
     combinaisons = []
     for i in range(min_nombre_vertex, length + 1):
-        combinaisons.extend(combinations(nodes, i))
+        combinaisons.append(combinations(nodes, (length + min_nombre_vertex - i)))
     return combinaisons
 
 
@@ -130,44 +130,36 @@ def maximum_common_induced_subgraph(G1, G2, min_number_vertex=3, use_max_clique=
 
     # Construction and Storage of Induced Subgraphs.
     # print("Extracting All Induced Subgraphs...")
-    subgraphs1 = []
-    now = time.time()
-    for combinaison in combinaisons1:
-        graph_extracted = extract_induced_subgraph(G1, combinaison)
-        if nx.is_connected(graph_extracted):
-            subgraphs1.append(graph_extracted)
-        if (time.time() - now > seconds):
-            break
-    # subgraphs2 = []
-    # time.time()
-    # for combinaison in combinaisons2:
-    #     graph_extracted = extract_induced_subgraph(G2, combinaison)
-    #     if nx.is_connected(graph_extracted):
-    #         subgraphs2.append(graph_extracted)
-    #     if (time.time() - now > seconds):
-    #         break
-    # print("Done!")
-    # print("Final Subgraphs Number after filtering :")
-    # print("for graph 1 :"+str(len(subgraphs1)))
-    # print("for graph 2 :"+str(len(subgraphs2)))
-
-    # Distances and storage of common subgraphs with the highest number of nodes.
     commons = []
-    # print("Distances...")
-    for sub1 in subgraphs1:
-        # for sub2 in subgraphs2:
-        #     if (len(sub1.nodes) == len(sub2.nodes)):
-        #         distance = eigenvector_similarity(sub1, sub2)
-        #         if (distance == 0.0):
-        #             commons.append((sub1, sub2, len(sub1.nodes)))
-        #         if (time.time() - now > seconds):
-        #             break
-        vf2 = Vf()   
-        res = vf2.main(G2, sub1)
-        if (res != {}):
-            commons.append((sub1, res, len(sub1.nodes)))
-        if (time.time() - now > seconds):
+    now = time.time()
+    i = 0
+    br = False
+    for combinaisons in [combinaisons1[0], combinaisons1[-1], combinaisons1[1:-1]]:
+        if (br):
             break
+        subgraphs1 = []
+        for combinaison in combinaisons:
+            graph_extracted = extract_induced_subgraph(G1, combinaison)
+            if nx.is_connected(graph_extracted):
+                subgraphs1.append(graph_extracted)
+            if (time.time() - now > seconds):
+                br = True
+                break
+        for sub1 in subgraphs1:
+            vf2 = Vf()   
+            res = vf2.main(G2, sub1)
+            if (res != {}):
+                commons.append((sub1, res, len(sub1.nodes)))
+            if (time.time() - now > seconds):
+                br = True
+                break
+            if (i == 0 and len(commons) > 0):
+                br = True
+                break
+        if (i == 1 and len(commons) == 0):
+            break
+        i = i + 1
+
 
     highest = 0
     for tup in commons:
