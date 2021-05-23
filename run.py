@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-from graph import *
 from mcs import *
 from utils import *
 import numpy as np
