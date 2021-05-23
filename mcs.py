@@ -116,6 +116,11 @@ def maximum_common_induced_subgraph(G1, G2, min_number_vertex=3, use_max_clique=
 
     start = time.time()
 
+    if (len(G1.nodes()) > len(G2.nodes())):
+        tempG = G1
+        G1 = G2
+        G2 = tempG
+
     # Combinations
     # print("Combinations in construction...")
     nodesG1 = len(G1.nodes)
@@ -154,6 +159,9 @@ def maximum_common_induced_subgraph(G1, G2, min_number_vertex=3, use_max_clique=
             res = vf2.main(G2, sub1)
             if (res != {}):
                 commons.append((sub1, res, len(sub1.nodes)))
+                if (i > 1):
+                    br = True
+                    break
             if (time.time() - now > seconds):
                 br = True
                 break
