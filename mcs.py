@@ -27,6 +27,7 @@ def combinations_recursive(graph, min_nombre_vertex=3):
     length = len(nodes)
     combinaisons = []
     for i in range(min_nombre_vertex, length + 1):
+        print(i)
         combinaisons.append(combinations(nodes, (length + min_nombre_vertex - i)))
     return combinaisons
 
@@ -125,7 +126,7 @@ def maximum_common_induced_subgraph(G1, G2, min_number_vertex=3, use_max_clique=
     # print("Combinations in construction...")
     nodesG1 = len(G1.nodes)
     # nodesG2 = len(G2.nodes)
-    combinaisons1 = combinations_recursive(G1, min_number_vertex)
+    # combinaisons1 = combinations_recursive(G1, min_number_vertex)
     # print("Combinations number Graph 1 :")
     # print(len(combinaisons1))
     # combinaisons2 = combinations_recursive(G2, min_number_vertex)
@@ -139,9 +140,13 @@ def maximum_common_induced_subgraph(G1, G2, min_number_vertex=3, use_max_clique=
     now = time.time()
     i = 0
     br = False
-    for combinaisons in [combinaisons1[0], combinaisons1[-1]] + combinaisons1[1:-1]:
-        if (br):
+    # print(start)
+    # for combinaisons in [combinaisons1[0], combinaisons1[-1]] + combinaisons1[1:-1]:
+    for combinaisons1 in [len(G1.nodes()), min_number_vertex] + list(range(min_number_vertex, len(G1.nodes()))):
+        if br:
             break
+        combinaisons = combinations(G1.nodes, combinaisons1)
+        # print(len(combinaisons[0]))
         subgraphs1 = []
         if (len(combinaisons[0]) > len(G2.nodes())):
             if i > 0:
