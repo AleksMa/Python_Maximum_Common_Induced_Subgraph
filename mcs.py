@@ -148,23 +148,23 @@ def maximum_common_induced_subgraph(G1, G2, min_number_vertex=3, use_max_clique=
         combinaisons = combinations(G1.nodes, combinaisons1)
         # print(len(combinaisons[0]))
         subgraphs1 = []
-        if (len(combinaisons[0]) > len(G2.nodes())):
+        if (len(combinaisons) == 0 or len(combinaisons[0]) > len(G2.nodes())):
             if i > 0:
                 br = True
             continue
         for combinaison in combinaisons:
             graph_extracted = extract_induced_subgraph(G1, combinaison)
-            if nx.is_connected(graph_extracted):
+            if (len(graph_extracted.nodes()) > 0 and nx.is_connected(graph_extracted)):
                 subgraphs1.append(graph_extracted)
             if (time.time() - now > seconds):
                 br = True
                 break
         for sub1 in subgraphs1:
-            vf2 = Vf()   
+            vf2 = Vf()
             res = vf2.main(G2, sub1)
-            if (res != {}):
+            if res != {}:
                 commons.append((sub1, res, len(sub1.nodes)))
-                if (i > 1):
+                if i > 1:
                     br = True
                     break
             if (time.time() - now > seconds):
