@@ -3,5 +3,5 @@
 ## Использование
 
 ```bash
-python3 run.py /data/graph.txt /data/pattern.txt 0.8 60
+python3 run.py /data/graph.txt /data/pattern.txt 0.8 60 0.99
 ```
