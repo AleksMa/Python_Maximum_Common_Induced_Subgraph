@@ -10,7 +10,7 @@ import sys
 from networkx.algorithms import approximation
 from scipy import stats
 import math
-warnings.filterwarnings("ignore")
+# warnings.filterwarnings("ignore")
 
 def CreateGraph(filename):
     Gs = []
@@ -88,9 +88,8 @@ for G1d in G1s:
         J = G2d['n']
         G2 = G2d['g']
         len2 = len(G2.nodes())
-        if (I == 0):
+        if I == 0:
             size2 += len2
-        # print(len1, len2)
 
         m = [0.0 for a in range(count)]
         for node in G2.nodes():
@@ -105,6 +104,8 @@ for G1d in G1s:
         # print(omega, m)
         # print(G1d['n'], G2d['n'], tau, stats.chi2.ppf(q=0.005, df=count))
 
+        # print(I, J, tau, stats.chi2.ppf(q=1-likelihood, df=count))
+
         if math.fabs(tau) > stats.chi2.ppf(q=1-likelihood, df=count):
             continue
 
@@ -112,13 +113,12 @@ for G1d in G1s:
         communs = maximum_common_induced_subgraph(G1,G2,int(mature),False,True,seconds)
         if len(communs) > 0:
             plag = 2 * float(communs[0][0].number_of_nodes()) / (len1 + len2)
-            if (plag > maxPlag):
+            if plag > maxPlag:
                 maxPlag = plag
                 maxJ = J
     common += maxPlag * (len1 + len(G2s[maxJ]['g'].nodes()))
     print(I, maxJ, maxPlag)
 print(common / (size1 + size2))
-exit()
 
 
 # func GetOmega(nodes []*Node) []float64 {
