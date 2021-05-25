@@ -26,9 +26,6 @@ def combinations_recursive(graph, min_nombre_vertex=3):
 
 
 def extract_induced_subgraph(graph, list_nodes_tokeep):
-    """
-        retourne le induced subgraph d'un graph suivant une liste de vertices à garder list_nodes_tokeep
-    """
     subgraph = graph.copy()
     listnodes = [x for x in subgraph.nodes if x not in list_nodes_tokeep]
     subgraph.remove_nodes_from(listnodes)
@@ -37,10 +34,6 @@ def extract_induced_subgraph(graph, list_nodes_tokeep):
 
 def maximum_common_induced_subgraph(G1, G2, min_number_vertex=3, use_max_clique=False, remove_disconnected=True,
                                     seconds=30.0):
-    """
-        param min_nombre_vertex : correspond au paramètre de combinations_recursive.
-        param use_max_clique : mettre à True pour se baser sur la max_clique.
-    """
 
     start = time.time()
 
@@ -49,20 +42,8 @@ def maximum_common_induced_subgraph(G1, G2, min_number_vertex=3, use_max_clique=
         G1 = G2
         G2 = tempG
 
-    # Combinations
-    # print("Combinations in construction...")
     nodesG1 = len(G1.nodes)
-    # nodesG2 = len(G2.nodes)
-    # combinaisons1 = combinations_recursive(G1, min_number_vertex)
-    # print("Combinations number Graph 1 :")
-    # print(len(combinaisons1))
-    # combinaisons2 = combinations_recursive(G2, min_number_vertex)
-    # print("Combinations number Graph 2 :")
-    # print(len(combinaisons2))
-    # print("Done!")
 
-    # Construction and Storage of Induced Subgraphs.
-    # print("Extracting All Induced Subgraphs...")
     commons = []
     now = time.time()
     i = 0
@@ -75,15 +56,15 @@ def maximum_common_induced_subgraph(G1, G2, min_number_vertex=3, use_max_clique=
         combinaisons = combinations(G1.nodes, combinaisons1)
         # print(len(combinaisons[0]))
         subgraphs1 = []
-        if (len(combinaisons) == 0 or len(combinaisons[0]) > len(G2.nodes())):
+        if len(combinaisons) == 0 or len(combinaisons[0]) > len(G2.nodes()):
             if i > 0:
                 br = True
             continue
         for combinaison in combinaisons:
             graph_extracted = extract_induced_subgraph(G1, combinaison)
-            if (len(graph_extracted.nodes()) > 0 and nx.is_connected(graph_extracted)):
+            if len(graph_extracted.nodes()) > 0 and nx.is_connected(graph_extracted):
                 subgraphs1.append(graph_extracted)
-            if (time.time() - now > seconds):
+            if time.time() - now > seconds:
                 br = True
                 break
         for sub1 in subgraphs1:
@@ -94,24 +75,24 @@ def maximum_common_induced_subgraph(G1, G2, min_number_vertex=3, use_max_clique=
                 if i > 1:
                     br = True
                     break
-            if (time.time() - now > seconds):
+            if time.time() - now > seconds:
                 br = True
                 break
-            if (i == 0 and len(commons) > 0):
+            if i == 0 and len(commons) > 0:
                 br = True
                 break
-        if (i == 1 and len(commons) == 0):
+        if i == 1 and len(commons) == 0:
             break
         i = i + 1
 
     highest = 0
     for tup in commons:
-        if (tup[2] > highest):
+        if tup[2] > highest:
             highest = tup[2]
 
     newcommons = []
     for tup in commons:
-        if (tup[2] == highest):
+        if tup[2] == highest:
             newcommons.append(tup)
 
         # print("Done!")
